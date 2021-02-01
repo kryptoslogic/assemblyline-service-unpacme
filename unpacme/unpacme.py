@@ -15,7 +15,7 @@ class unpacme():
 		self.__API_TARGET = 'https://api.unpac.me/api/v1'
 		self.RATE_LIMIT = 5
 
-	def upload_file(self, path):
+	def upload_file(self, path, private_submission=False):
 
 		if self.API_KEY is None:
 			logging.error('In order to upload files to unpac.me, you must have a valid API key configured.')
@@ -46,8 +46,12 @@ class unpacme():
 		response = None
 		logging.info('Uploading %s (%s bytes) to unpac.me' % (path, file_size))
 
+		params = {
+			"private": private_submission
+		}
+
 		try:
-			response = requests.post(f'{self.__API_TARGET}/private/upload', files=files, headers=auth_header)
+			response = requests.post(f'{self.__API_TARGET}/private/upload', params=params, files=files, headers=auth_header)
 			response.raise_for_status()
 		except requests.exceptions.HTTPError as err:
 			logging.error(f'File upload failed with the following error: {err}.')
